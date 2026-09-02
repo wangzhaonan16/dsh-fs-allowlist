@@ -1,0 +1,5 @@
+# dsh-fs-allowlist：白名单目录写入免审批
+# 包装 dsh-fs-sandbox 挂载的 ctx.fs.checkedTarget 栅栏方法（详见 README.md）
+- insert:
+    - id: fs-allowlist
+      name: dsh-fs-allowlist

@@ -1,0 +1,48 @@
+{
+  "name": "dsh-fs-allowlist",
+  "version": "0.2.0",
+  "description": "Approval-free writes into whitelisted directories: wraps ctx.fs.checkedTarget for write/edit, auto-approves bash escalations that touch whitelisted paths, with a Settings GUI. 白名单目录写入免审批（write/edit + bash），设置页可视化调整。",
+  "license": "MIT",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "dsh",
+    "sandbox",
+    "allowlist",
+    "permissions"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangzhaonan16/dsh-fs-allowlist.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wangzhaonan16/dsh-fs-allowlist/issues"
+  },
+  "homepage": "https://github.com/wangzhaonan16/dsh-fs-allowlist#readme",
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  }
+}
