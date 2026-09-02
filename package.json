@@ -1,6 +1,6 @@
 {
   "name": "dsh-fs-allowlist",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Approval-free writes into whitelisted directories: wraps ctx.fs.checkedTarget for write/edit, auto-approves bash escalations that touch whitelisted paths, with a Settings GUI. 白名单目录写入免审批（write/edit + bash），设置页可视化调整。",
   "license": "MIT",
   "type": "module",
