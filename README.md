@@ -9,7 +9,7 @@ DSH plugin: **approval-free writes into whitelisted directories**. Let the `writ
 | Layer | Mechanism | Covers |
 |---|---|---|
 | write/edit tools | Wraps the `ctx.fs.checkedTarget` fence; whitelisted paths pass early | Approval-free vault reads/writes |
-| bash commands | `approval/request` waterfall listener auto-answers `allowed-once` when the escalation reason mentions a whitelisted path | Approval-free bash writes (text heuristic; misses fall back to manual approval) |
+| bash commands | `tools/pre-execute` indexes the command text; `approval/request` auto-answers `allowed-once` when the command or escalation reason hits a whitelisted path (recursive check) | Approval-free bash writes (command text first; misses fall back to manual approval) |
 | Settings GUI | `settings.plugins.tab` section + server-side HTTP management routes | Add/remove directories, toggle bash auto-approve visually |
 
 Configuration is **hot-reloaded**: GUI edits apply instantly; manual edits to the config file are picked up within 3 seconds. No DSH restart needed.
@@ -27,7 +27,7 @@ File semantics — atomic writes, version guards, read-before-write checks, diff
 
 ### bash layer (approval auto-answer)
 
-bash runs under the Seatbelt process sandbox, whose profile cannot be extended from a plugin. Instead the plugin registers an `approval/request` waterfall listener: when a request comes from the bash tool and the escalation reason (model-written text) mentions a whitelisted path (absolute or `~`-abbreviated form), it answers `allowed-once` automatically. This is a **text heuristic**: misses always fall back to the human prompt (fail-safe); enabling it means trusting the model's justification. Toggle it off any time in the settings page.
+bash runs under the Seatbelt process sandbox, whose profile cannot be extended from a plugin. Instead two listeners cooperate: `tools/pre-execute` records each bash call's command text by callId, and the `approval/request` answerer looks it up and matches the command text plus the escalation reason against the allowlist — path-like tokens are extracted, `~` is expanded to home, then recursively checked under whitelisted roots (**a parent entry covers all its children**). The command text almost always contains the target path, so approval no longer depends on the model writing it in the justification. Misses always fall back to the human prompt (fail-safe). Toggle it off any time in the settings page.
 
 ## Install
 
@@ -68,12 +68,12 @@ Installs into `$DSH_HOME/profiles/web`; **restart DSH Desktop** to take effect (
 | write/edit inside a whitelisted root | **approval-free** |
 | write/edit anywhere else | deny → escalate → approval (unchanged) |
 | read-only mode writing a whitelisted root | still denied (stricter knob wins) |
-| bash touching a whitelisted root (reason matches) | **auto-approved, no prompt** |
+| bash touching a whitelisted root (command or reason matches) | **auto-approved, no prompt** |
 | any other bash escalation (no match) | normal approval prompt |
 
 ## Known limitations
 
-1. The bash auto-answer matches the model-written justification text — a poorly worded justification may still prompt (fail-safe); a match trusts that justification for that one call.
+1. The bash auto-answer matches the command text plus the justification against the allowlist (recursive path check + substring fallback) — still a heuristic: if neither mentions a whitelisted path, a prompt appears (fail-safe); a match approves that one call.
 2. `checkedTarget` is an internal seam of the shipped bundle: if a DSH upgrade refactors it, the plugin degrades loudly to "warn + transparent" (equivalent to today's behavior) without breaking sessions; adapt per release.
 3. A whitelist entry means the agent may write there without asking — keep the list deliberately narrow.
 
