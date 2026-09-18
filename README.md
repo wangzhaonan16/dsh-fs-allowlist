@@ -38,7 +38,7 @@ dsh plugin --profile web add /path/to/dsh-fs-allowlist
 or from GitHub after release:
 
 ```bash
-dsh plugin --profile web add "github:wangzhaonan16/dsh-fs-allowlist#main"
+dsh plugin --profile web add "github:wzn16/dsh-fs-allowlist#main"
 ```
 
 Installs into `$DSH_HOME/profiles/web`; **restart DSH Desktop** to take effect (refreshing the browser is not enough). The profile links the source directory, so editing the source only needs a restart — no reinstall.

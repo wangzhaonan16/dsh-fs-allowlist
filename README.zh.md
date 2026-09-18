@@ -38,7 +38,7 @@ dsh plugin --profile web add /path/to/dsh-fs-allowlist
 发布到 GitHub 后也可以直接：
 
 ```bash
-dsh plugin --profile web add "github:wangzhaonan16/dsh-fs-allowlist#main"
+dsh plugin --profile web add "github:wzn16/dsh-fs-allowlist#main"
 ```
 
 装入 `$DSH_HOME/profiles/web` 并自动登记，**重启 DSH Desktop** 后生效（刷浏览器不够）。本插件源码目录被 profile 以 `link:` 方式引用，改源码后重启即生效，无需重装。
